@@ -1,0 +1,385 @@
+/* Import a techy font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+    --bg-color: #121212;
+    --primary-text-color: #00ff00; /* Neon Green */
+    --secondary-text-color: #00ffff; /* Cyan / Electric Blue */
+    --container-bg: #1a1a1a;
+    --border-color: #00ffff;
+    --shadow-color: rgba(0, 255, 255, 0.5);
+    --button-hover-bg: #00ffff;
+    --button-hover-text: #121212;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.navbar {
+    width: 100%;
+    background-color: var(--container-bg);
+    border-bottom: 2px solid var(--border-color);
+    padding: 1rem 5%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.navbar .logo {
+    font-size: 1.8rem;
+    color: var(--secondary-text-color);
+    text-shadow: 0 0 5px var(--secondary-text-color);
+}
+
+.navbar .nav-links a {
+    color: var(--primary-text-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-left: 2rem;
+    transition: all 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+    color: var(--secondary-text-color);
+    text-shadow: 0 0 5px var(--secondary-text-color);
+}
+
+.main-container {
+    margin-top: 4rem;
+    padding: 2rem;
+    background-color: var(--container-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    width: 80%;
+    max-width: 1200px;
+    text-align: center;
+    box-shadow: 0 0 20px var(--shadow-color);
+}
+
+h1 {
+    color: var(--secondary-text-color);
+    text-shadow: 0 0 7px var(--secondary-text-color);
+    margin-bottom: 2rem;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+label {
+    font-size: 1.2rem;
+}
+
+select, button {
+    background-color: transparent;
+    color: var(--primary-text-color);
+    border: 2px solid var(--primary-text-color);
+    padding: 0.8rem 1.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300FF00%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: .65em auto;
+    padding-right: 3rem;
+}
+
+select option {
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+}
+
+button:hover, select:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+    border-color: var(--button-hover-bg);
+    box-shadow: 0 0 15px var(--shadow-color);
+}
+
+#visualization-section {
+    margin-top: 2rem;
+    min-height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+    border: 8px solid #333;
+    border-top: 8px solid var(--secondary-text-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    display: none; /* Initially hidden */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Add these new styles to your existing style.css file */
+
+.viz-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+}
+
+.viz-controls button {
+    background-color: var(--container-bg);
+    border: 2px solid var(--primary-text-color);
+    color: var(--primary-text-color);
+}
+
+.viz-controls button:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+    border-color: var(--button-hover-bg);
+}
+
+#visualization-section {
+    margin-top: 2rem;
+    width: 100%;
+    min-height: 600px; /* Ensure space for the map */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+#map-container {
+    width: 100%;
+    height: 100%;
+}
+/* Import a techy font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+    --bg-color: #121212;
+    --primary-text-color: #00ff00; /* Neon Green */
+    --secondary-text-color: #00ffff; /* Cyan / Electric Blue */
+    --container-bg: #1a1a1a;
+    --border-color: #00ffff;
+    --shadow-color: rgba(0, 255, 255, 0.5);
+    --button-hover-bg: #00ffff;
+    --button-hover-text: #121212;
+    --error-color: #ff4d4d;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.navbar {
+    width: 100%;
+    background-color: var(--container-bg);
+    border-bottom: 2px solid var(--border-color);
+    padding: 1rem 5%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar .logo {
+    font-size: 1.8rem;
+    color: var(--secondary-text-color);
+    text-shadow: 0 0 5px var(--secondary-text-color);
+}
+
+.navbar .nav-links a {
+    color: var(--primary-text-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-left: 2rem;
+    transition: all 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+    color: var(--secondary-text-color);
+    text-shadow: 0 0 5px var(--secondary-text-color);
+}
+
+.main-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background-color: var(--container-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1400px;
+    text-align: center;
+    box-shadow: 0 0 20px var(--shadow-color);
+}
+
+h1, h3 {
+    color: var(--secondary-text-color);
+    text-shadow: 0 0 7px var(--secondary-text-color);
+    margin-bottom: 1.5rem;
+}
+
+p {
+    line-height: 1.6;
+}
+
+.controls, .viz-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+label {
+    font-size: 1.2rem;
+}
+
+select, button {
+    background-color: transparent;
+    color: var(--primary-text-color);
+    border: 2px solid var(--primary-text-color);
+    padding: 0.8rem 1.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300FF00%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: .65em auto;
+    padding-right: 3rem;
+}
+
+select option {
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+}
+
+button:hover, select:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+    border-color: var(--button-hover-bg);
+    box-shadow: 0 0 15px var(--shadow-color);
+}
+
+#visualization-section {
+    margin-top: 2rem;
+    min-height: 70vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#map-container {
+    width: 100%;
+    height: 100%;
+}
+
+.loader {
+    border: 8px solid #333;
+    border-top: 8px solid var(--secondary-text-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    display: none; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- NEW STYLES FOR INTERACTIVE SCENARIO --- */
+
+#scenario-controls {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--primary-text-color);
+    border-radius: 8px;
+}
+
+#selected-sensors {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #222;
+    border-radius: 5px;
+    min-height: 30px;
+}
+
+#selected-sensors strong {
+    color: var(--secondary-text-color);
+}
+
+.sensor-tag {
+    background-color: var(--primary-text-color);
+    color: var(--bg-color);
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin: 3px;
+    display: inline-block;
+}
+
+#btn-reset {
+    border-color: var(--error-color);
+    color: var(--error-color);
+}
+
+#btn-reset:hover {
+    background-color: var(--error-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.5);
+}

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Architecture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #0f172a, #1e293b); 
+            color: #f1f5f9; 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 15px; 
+        }
+        .container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: rgba(15, 23, 42, 0.9); 
+            border-radius: 16px; 
+            padding: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
+        h1 { 
+            font-size: 1.8rem; 
+            margin-bottom: 8px; 
+            background: linear-gradient(90deg, #60a5fa, #38bdf8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2); 
+        }
+        .diagram { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 25px; 
+        }
+        .component { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            padding: 15px 20px; 
+            background: rgba(30, 41, 59, 0.7); 
+            border-radius: 12px; 
+            width: 100%; 
+            border: 1px solid rgba(255,255,255,0.08); 
+        }
+        .icon { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 18px; 
+        }
+        .user-icon { background: linear-gradient(135deg, #818cf8, #c084fc); }
+        .ui-icon { background: linear-gradient(135deg, #f472b6, #ec4899); }
+        .backend-icon { background: linear-gradient(135deg, #60a5fa, #38bdf8); }
+        .model-icon { background: linear-gradient(135deg, #34d399, #22d3ee); }
+        .viz-icon { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .map-icon { background: linear-gradient(135deg, #6ee7b7, #34d399); }
+        .content { flex: 1; }
+        .title { 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            margin-bottom: 5px; 
+            color: #e2e8f0; 
+        }
+        .desc { 
+            font-size: 0.85rem; 
+            color: #cbd5e1; 
+            line-height: 1.4; 
+        }
+        .arrow { 
+            position: relative; 
+            height: 30px; 
+            width: 3px; 
+            background: linear-gradient(to bottom, #60a5fa, #38bdf8); 
+            margin: 0 auto; 
+        }
+        .arrow::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -6px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            border-left: 6px solid transparent; 
+            border-right: 6px solid transparent; 
+            border-top: 10px solid #38bdf8; 
+        }
+        .models { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 8px; 
+            flex-wrap: wrap; 
+        }
+        .model { 
+            background: rgba(15, 34, 58, 0.6); 
+            padding: 5px 12px; 
+            border-radius: 8px; 
+            font-size: 0.8rem; 
+            color: #34d399; 
+            border: 1px solid rgba(52, 211, 153, 0.3); 
+        }
+        .highlight { 
+            color: #93c5fd; 
+            font-weight: 600; 
+        }
+        .label { 
+            position: absolute; 
+            top: -20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: rgba(30, 64, 175, 0.3); 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 0.75rem; 
+            color: #bfdbfe; 
+            white-space: nowrap; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>System Architecture Diagram</h1>
+        </div>
+        
+        <div class="diagram">
+            <!-- User -->
+            <div class="component">
+                <div class="icon user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="content">
+                    <div class="title">User</div>
+                    <div class="desc">Interacts with Web UI to select models and scenarios</div>
+                </div>
+            </div>
+            
+            <div class="arrow" style="position:relative;">
+                <div class="label">HTTP Request</div>
+            </div>
+            
+            <!-- Web UI -->
+            <div class="component">
+                <div class="icon ui-icon">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <div class="content">
+                    <div class="title">Web UI <span class="highlight">(index.html)</span></div>
+                    <div class="desc">Provides interface for model/scenario selection</div>
+                </div>
+            </div>
+            
+            <div class="arrow" style="position:relative;">
+                <div class="label">API Request</div>
+            </div>
+            
+            <!-- Flask Backend -->
+            <div class="component">
+                <div class="icon backend-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="content">
+                    <div class="title">Flask Backend <span class="highlight">(app.py)</span></div>
+                    <div class="desc">Retrieves models/data, fabricates inputs for simulations</div>
+                </div>
+            </div>
+            
+            <div class="arrow" style="position:relative;">
+                <div class="label">Model Prediction</div>
+            </div>
+            
+            <!-- PyTorch Models -->
+            <div class="component">
+                <div class="icon model-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="content">
+                    <div class="title">PyTorch Models</div>
+                    <div class="desc">Perform spatio-temporal predictions</div>
+                    <div class="models">
+                        <div class="model">STGCN</div>
+                        <div class="model">DSTAGNN</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow" style="position:relative;">
+                <div class="label">Visualization Processing</div>
+            </div>
+            
+            <!-- Visualization -->
+            <div class="component">
+                <div class="icon viz-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="content">
+                    <div class="title">Visualization Helpers <span class="highlight">(Pydeck)</span></div>
+                    <div class="desc">Converts output to 3D map visualization data</div>
+                </div>
+            </div>
+            
+            <div class="arrow" style="position:relative;">
+                <div class="label">Rendered Map</div>
+            </div>
+            
+            <!-- 3D Map -->
+            <div class="component">
+                <div class="icon map-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="content">
+                    <div class="title">Interactive 3D Map</div>
+                    <div class="desc">Displays predictions in interactive 3D visualization</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

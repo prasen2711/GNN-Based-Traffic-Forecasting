@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Flow Prediction Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .interactive-controls {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            color: #333; /* Text color for light theme */
+        }
+        .sensor-table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+            position: sticky;
+            top: 0;
+        }
+        .viz-controls {
+            margin-bottom: 20px;
+        }
+        .viz-btn {
+            margin-right: 10px;
+        }
+        .loader {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">MODEL_INTERFACE_v2.0</div>
+        <div class="nav-links">
+            <a href="#visualization-section">Visualization</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <h1>Traffic Forecast Model Analyzer</h1>
+        <p>Select a model and a scenario to generate an interactive map visualization.</p>
+
+        <div class="controls">
+            <label for="model-selector">Select Model:</label>
+            <select id="model-selector">
+                {% if models %}
+                    {% for model in models %}
+                        <option value="{{ model }}">{{ model }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="" disabled>No models found</option>
+                {% endif %}
+            </select>
+        </div>
+        
+        <div class="viz-controls">
+            <button class="viz-btn" data-viz="test_set">Test Set Performance</button>
+            <button class="viz-btn" data-viz="gridlock">Gridlock Scenario</button>
+            <button class="viz-btn" data-viz="rerouting">Rerouting Scenario</button>
+            <button class="viz-btn" data-viz="interactive">Interactive Scenario</button>
+        </div>
+
+        <section id="visualization-section">
+            <div id="map-container">
+                <p>Select a model and scenario to begin.</p>
+            </div>
+            
+            <div class="interactive-controls" id="interactive-controls" style="display: none;">
+                <h3>Interactive Scenario Controls</h3>
+                <p>Select sensors to simulate blockages or congestion:</p>
+                <div class="sensor-table-container">
+                    <table id="sensor-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all-sensors"> Select All</th>
+                                <th>Sensor ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <button id="run-interactive-btn" class="viz-btn">Run Interactive Simulation</button>
+                <button id="reset-btn" class="viz-btn">Reset to Original</button>
+            </div>
+            
+            <div class="loader" id="loader"></div>
+        </section>
+    </div>
+
+    <script>
+        let currentModelName = null;
+        let currentScenario = null;
+        let originalMapHtml = null;
+        let selectedSensors = [];
+        let sensorData = [];
+
+        function generateVisualization(vizType) {
+            const modelSelector = document.getElementById('model-selector');
+            const modelName = modelSelector.value;
+            const mapContainer = document.getElementById('map-container');
+            const loader = document.getElementById('loader');
+            const interactiveControls = document.getElementById('interactive-controls');
+
+            console.log(`[JS DEBUG] Generating visualization for model: ${modelName}, scenario: ${vizType}`);
+
+            if (!modelName) {
+                mapContainer.innerHTML = "<p style='color: #ff4d4d;'>Please select a model from the dropdown.</p>";
+                return;
+            }
+
+            currentModelName = modelName;
+            currentScenario = vizType;
+
+            loader.style.display = 'block';
+            mapContainer.innerHTML = '';
+            interactiveControls.style.display = 'none'; // Hide interactive controls initially
+            selectedSensors = []; // Reset selected sensors
+
+            fetch('/visualize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model_name: modelName,
+                    viz_type: vizType
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = 'none';
+                if (data.error) {
+                    mapContainer.innerHTML = `<p style='color: #ff4d4d;'>Error: ${data.error}</p>`;
+                } else {
+                    if (vizType === 'interactive') {
+                        interactiveControls.style.display = 'block';
+                        loadSensorData(modelName); // Load sensor data for the interactive scenario
+                    } else {
+                        interactiveControls.style.display = 'none';
+                    }
+                    originalMapHtml = data.map_html; // Store original map
+                    const iframe = document.createElement('iframe');
+                    iframe.srcdoc = data.map_html;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '600px';
+                    iframe.style.border = 'none';
+                    mapContainer.appendChild(iframe);
+                }
+            })
+            .catch(error => {
+                loader.style.display = 'none';
+                mapContainer.innerHTML = `<p style='color: #ff4d4d;'>An unexpected error occurred: ${error}</p>`;
+            });
+        }
+
+        function loadSensorData(modelName) {
+            fetch('/get_sensors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model_name: modelName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error loading sensors:', data.error);
+                    return;
+                }
+                sensorData = data.sensors;
+                populateSensorTable();
+            })
+            .catch(error => {
+                console.error('Error fetching sensor ', error);
+            });
+        }
+
+        function populateSensorTable() {
+            const tbody = document.querySelector('#sensor-table tbody');
+            tbody.innerHTML = ''; // Clear existing rows
+            sensorData.forEach(sensorId => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="sensor-checkbox" value="${sensorId}"></td>
+                    <td>${sensorId}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Add event listener for select all checkbox
+            document.getElementById('select-all-sensors').addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.sensor-checkbox');
+                checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+            });
+
+            // Add event listener for individual checkboxes
+            document.querySelectorAll('.sensor-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedSensors);
+            });
+        }
+
+        function updateSelectedSensors() {
+            selectedSensors = Array.from(document.querySelectorAll('.sensor-checkbox:checked')).map(cb => cb.value);
+        }
+
+        function runInteractiveSimulation() {
+            if (!currentModelName) {
+                alert('Please select a model first.');
+                return;
+            }
+
+            // Recalculate selected sensors just before sending
+            updateSelectedSensors();
+            console.log(`[JS DEBUG] Before sending, selectedSensors:`, selectedSensors);
+
+            const mapContainer = document.getElementById('map-container');
+            const loader = document.getElementById('loader');
+
+            loader.style.display = 'block';
+
+            fetch('/interactive_predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model_name: currentModelName,
+                    blocked_sensors: selectedSensors
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = 'none';
+                if (data.error) {
+                    mapContainer.innerHTML = `<p style='color: #ff4d4d;'>Error: ${data.error}</p>`;
+                } else {
+                    const iframe = document.createElement('iframe');
+                    iframe.srcdoc = data.map_html;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '600px';
+                    iframe.style.border = 'none';
+                    mapContainer.innerHTML = ''; // Clear previous map
+                    mapContainer.appendChild(iframe);
+                }
+            })
+            .catch(error => {
+                loader.style.display = 'none';
+                mapContainer.innerHTML = `<p style='color: #ff4d4d;'>An unexpected error occurred: ${error}</p>`;
+            });
+        }
+
+        function resetVisualization() {
+            if (originalMapHtml) {
+                const mapContainer = document.getElementById('map-container');
+                const iframe = document.createElement('iframe');
+                iframe.srcdoc = originalMapHtml;
+                iframe.style.width = '100%';
+                iframe.style.height = '600px';
+                iframe.style.border = 'none';
+                mapContainer.innerHTML = '';
+                mapContainer.appendChild(iframe);
+                
+                // Reset sensor selections
+                document.getElementById('select-all-sensors').checked = false;
+                document.querySelectorAll('.sensor-checkbox').forEach(cb => cb.checked = false);
+                selectedSensors = [];
+            }
+        }
+
+        document.querySelectorAll('.viz-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const vizType = button.getAttribute('data-viz');
+                generateVisualization(vizType);
+            });
+        });
+
+        document.getElementById('run-interactive-btn').addEventListener('click', runInteractiveSimulation);
+        document.getElementById('reset-btn').addEventListener('click', resetVisualization);
+    </script>
+
+</body>
+</html>
