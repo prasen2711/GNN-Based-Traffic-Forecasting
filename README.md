@@ -1,614 +1,576 @@
 GNN-Based Traffic Forecasting
 
+A deep learning-based traffic forecasting system using Graph Neural Networks (GNNs) to model spatial and temporal relationships in traffic sensor data.
 
+The project uses the METR-LA traffic dataset and implements two spatio-temporal deep learning architectures:
 
-A deep learning-based traffic forecasting project using Graph Neural Network (GNN) approaches for modeling spatial and temporal relationships in traffic sensor data.
+STGCN — Spatio-Temporal Graph Convolutional Network
 
+DSTAGNN — Dynamic Spatial-Temporal Attention Graph Neural Network
 
+The project also includes a Flask-based web application for interacting with the traffic forecasting system.
 
-The project works with the METR-LA traffic dataset and includes implementations for STGCN (Spatio-Temporal Graph Convolutional Network) and DSTAGNN (Dynamic Spatial-Temporal Attention Graph Neural Network) models. It also provides a web-based interface for interacting with the forecasting system.
+Overview
 
+Traffic forecasting is an important component of intelligent transportation systems. Traffic sensors are distributed across a road network, and traffic conditions at one location can be influenced by conditions at nearby locations.
 
-
-Project Overview
-
-
-
-Traffic forecasting is an important component of intelligent transportation systems. Traffic sensors are distributed across a road network, where measurements at one location can be influenced by traffic conditions at nearby locations.
-
-
-
-Traditional time-series models primarily focus on temporal patterns. Graph Neural Networks can additionally model the spatial relationships between traffic sensors, making them suitable for traffic forecasting problems.
-
-
+Traditional time-series forecasting methods primarily focus on temporal patterns. Graph Neural Networks can additionally model the spatial relationships between traffic sensors, making them suitable for traffic forecasting over road networks.
 
 This project combines:
 
-
-
 Graph-based spatial modeling
-
-
 
 Temporal traffic patterns
 
-
-
 Deep learning
-
-
 
 Traffic sensor network information
 
-
-
 Pre-trained forecasting models
 
-
+STGCN and DSTAGNN architectures
 
 A Flask-based web interface
 
+Traffic sensor location information
 
+Model preprocessing and training pipelines
+
+Key Features
+
+Traffic forecasting using Graph Neural Networks
+
+Spatial dependency modeling between traffic sensors
+
+Temporal dependency modeling
+
+STGCN implementation
+
+DSTAGNN implementation
+
+METR-LA traffic dataset
+
+Pre-trained model checkpoints
+
+Traffic sensor graph data
+
+Flask-based web application
+
+Interactive traffic forecasting interface
+
+Training and preprocessing scripts
+
+Jupyter Notebook for experimentation
+
+Model training loss visualization
+
+System Architecture
+
+The overall traffic forecasting pipeline follows the workflow below:
+
+                 METR-LA Traffic Dataset
+                           │
+                           ▼
+                  Data Preprocessing
+                           │
+                           ▼
+                   Graph Construction
+                           │
+                           ▼
+              Spatial-Temporal Features
+                           │
+                  ┌────────┴────────┐
+                  │                 │
+                  ▼                 ▼
+                STGCN            DSTAGNN
+                  │                 │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  Traffic Forecast
+                           │
+                           ▼
+                  Flask Web Application
+                           │
+                           ▼
+                Forecast Visualization
 
 Models
-
 STGCN
 
+STGCN (Spatio-Temporal Graph Convolutional Network) combines graph convolution and temporal convolution to learn spatial and temporal dependencies in traffic sensor data.
 
-
-STGCN (Spatio-Temporal Graph Convolutional Network) combines graph convolution with temporal convolution to model spatial and temporal dependencies in traffic data.
-
-
+The graph component captures relationships between traffic sensors, while temporal convolution captures changes in traffic conditions over time.
 
 DSTAGNN
 
+DSTAGNN (Dynamic Spatial-Temporal Attention Graph Neural Network) uses attention mechanisms to model dynamic spatial and temporal relationships within the traffic sensor network.
 
+The model is designed to capture changing dependencies between different traffic sensors over time.
 
-DSTAGNN (Dynamic Spatial-Temporal Attention Graph Neural Network) uses attention mechanisms to model dynamic spatial and temporal relationships in the traffic network.
-
-
-
-The trained model files are stored in:
-
-
-
-output/tuning\_results/
-
-├── DSTAGNN\_run\_1.pth
-
-├── DSTAGNN\_run\_1\_loss\_plot.png
-
-├── STGCN\_run\_1.pth
-
-└── STGCN\_run\_1\_loss\_plot.png
-
-
-
+Model Comparison
+Model	Full Name	Main Approach
+STGCN	Spatio-Temporal Graph Convolutional Network	Graph convolution + temporal convolution
+DSTAGNN	Dynamic Spatial-Temporal Attention Graph Neural Network	Dynamic spatial-temporal attention
 Dataset
-
-
 
 This project uses the METR-LA traffic dataset, which contains traffic measurements collected from sensors in the Los Angeles highway network.
 
-
-
 The dataset and supporting graph files are located in:
 
+Dataset_DP_ESE/
 
-
-Dataset\_DP\_ESE/
-
-├── SE\_metrla.txt
-
-├── W\_metrla.csv
-
-├── adj\_mx.pkl
-
-├── distances\_la\_2012.csv
-
-├── graph\_sensor\_locations.csv
-
-├── metr-la.h5
-
-└── metr\_ids.txt
-
-
-
-
+Dataset Files
+File	Description
+metr-la.h5	Traffic measurements
+metr_ids.txt	Traffic sensor identifiers
+adj_mx.pkl	Sensor adjacency matrix
+W_metrla.csv	Graph/weight information
+SE_metrla.txt	Sensor-related graph data
+distances_la_2012.csv	Distance information between sensors
+graph_sensor_locations.csv	Geographic locations of traffic sensors
 
 The metr-la.h5 file contains the traffic measurements used by the forecasting pipeline.
 
-
-
 Project Structure
-
 GNN-Based-Traffic-Forecasting/
-
 │
-
-├── Dataset\_DP\_ESE/
-
-│   ├── SE\_metrla.txt
-
-│   ├── W\_metrla.csv
-
-│   ├── adj\_mx.pkl
-
-│   ├── distances\_la\_2012.csv
-
-│   ├── graph\_sensor\_locations.csv
-
+├── Dataset_DP_ESE/
+│   ├── SE_metrla.txt
+│   ├── W_metrla.csv
+│   ├── adj_mx.pkl
+│   ├── distances_la_2012.csv
+│   ├── graph_sensor_locations.csv
 │   ├── metr-la.h5
-
-│   └── metr\_ids.txt
-
+│   └── metr_ids.txt
 │
-
 ├── output/
-
 │   ├── scaler.pkl
-
-│   └── tuning\_results/
-
-│       ├── DSTAGNN\_run\_1.pth
-
-│       ├── DSTAGNN\_run\_1\_loss\_plot.png
-
-│       ├── STGCN\_run\_1.pth
-
-│       └── STGCN\_run\_1\_loss\_plot.png
-
+│   └── tuning_results/
+│       ├── DSTAGNN_run_1.pth
+│       ├── DSTAGNN_run_1_loss_plot.png
+│       ├── STGCN_run_1.pth
+│       └── STGCN_run_1_loss_plot.png
 │
-
 ├── static/
-
 │   └── css/
-
-│       ├── home\_style.css
-
+│       ├── home_style.css
 │       └── style.css
-
 │
-
 ├── templates/
-
 │   ├── home.html
-
 │   ├── index.html
-
-│   └── system\_arch.html
-
+│   └── system_arch.html
 │
-
 ├── GeminiV3.ipynb
-
 ├── app.py
-
-├── app\_cc.py
-
+├── app_cc.py
 ├── precompute.py
-
-├── print\_models.py
-
-├── train\_models.py
-
-├── dl\_report.docx
-
+├── print_models.py
+├── train_models.py
+├── dl_report.docx
+├── requirements.txt
+├── .gitignore
 └── README.md
-
-
 
 Technologies Used
 
-
-
 Python
-
-
 
 PyTorch
 
-
-
 Graph Neural Networks
-
-
 
 STGCN
 
-
-
 DSTAGNN
-
-
 
 Flask
 
-
-
 NumPy
-
-
 
 Pandas
 
-
-
 Scikit-learn
 
+Matplotlib
 
+NetworkX
+
+PyDeck
 
 Jupyter Notebook
 
-
-
 HTML
-
-
 
 CSS
 
+Requirements
 
+The project requires Python and the Python packages listed in requirements.txt.
+
+Main dependencies include:
+
+PyTorch
+
+NumPy
+
+Pandas
+
+Scikit-learn
+
+Flask
+
+Matplotlib
+
+NetworkX
+
+PyDeck
+
+PyTables
+
+The exact dependencies used by the project are specified in:
+
+requirements.txt
 
 Installation
-
-
-
-Clone the repository:
-
-
-
+1. Clone the repository
 git clone https://github.com/prasen2711/GNN-Based-Traffic-Forecasting.git
-
 cd GNN-Based-Traffic-Forecasting
 
-
-
-
-
-Create a virtual environment:
-
-
-
+2. Create a virtual environment
 Windows
-
 python -m venv venv
-
-venv\\Scripts\\activate
-
-
+venv\Scripts\activate
 
 Linux/macOS
-
 python3 -m venv venv
-
 source venv/bin/activate
 
-
-
-
-
-Install the required Python packages.
-
-
-
-If the project contains a requirements.txt file:
-
-
-
+3. Install dependencies
 pip install -r requirements.txt
 
 
-
-
-
-Otherwise, install the dependencies required by the Python source files and your PyTorch environment.
-
-
+If PyTorch needs to be installed separately for your hardware or CUDA configuration, install the appropriate PyTorch build before running the project.
 
 Running the Application
 
-
-
-The project includes a Flask application.
-
-
+The project includes a Flask-based web application.
 
 Run:
-
-
 
 python app.py
 
 
+After the application starts, Flask will display the local address in the terminal.
 
-
-
-After starting the application, open the local address displayed by Flask in your browser.
-
-
-
-For example:
-
-
+Typically, the application can be accessed at:
 
 http://127.0.0.1:5000/
 
 
+Open the displayed address in a web browser.
 
-Model Training
+Web Application
 
+The Flask application provides a web-based interface for interacting with the traffic forecasting system.
 
-
-The project includes scripts related to preprocessing and model training:
-
-
-
-precompute.py
-
-train\_models.py
-
-print\_models.py
-
-
-
-
-
-The general workflow is:
-
-
-
-Traffic Dataset
-
-&#x20;     │
-
-&#x20;     ▼
-
-Data Preprocessing
-
-&#x20;     │
-
-&#x20;     ▼
-
-Graph Construction
-
-&#x20;     │
-
-&#x20;     ▼
-
-Spatio-Temporal Modeling
-
-&#x20;     │
-
-&#x20;     ├───────────────┐
-
-&#x20;     ▼               ▼
-
-&#x20;   STGCN          DSTAGNN
-
-&#x20;     │               │
-
-&#x20;     └───────┬───────┘
-
-&#x20;             ▼
-
-&#x20;      Traffic Forecast
-
-&#x20;             │
-
-&#x20;             ▼
-
-&#x20;       Web Application
-
-
-
-Web Interface
-
-
-
-The project contains a Flask-based web interface with HTML templates located in:
-
-
+The main HTML templates are located in:
 
 templates/
-
 ├── home.html
-
 ├── index.html
-
-└── system\_arch.html
-
-
-
+└── system_arch.html
 
 
 The corresponding CSS files are located in:
 
-
-
 static/css/
+├── home_style.css
+└── style.css
 
 
+The web application is designed to provide access to the traffic forecasting functionality and system information.
+
+Application Components
+
+The application includes functionality related to:
+
+Traffic forecasting
+
+Traffic sensor information
+
+Graph-based traffic network visualization
+
+Model inference
+
+Forecast results
+
+System architecture information
+
+Screenshots
+
+Screenshots of the web application can be added here.
+
+Create a folder:
+
+screenshots/
 
 
+and place application screenshots inside it.
 
-The interface is intended to provide access to the traffic forecasting functionality and system information.
+For example:
 
-
-
-Output Files
-
-
-
-Model and preprocessing outputs are stored under:
+screenshots/
+├── home.png
+├── forecasting.png
+└── architecture.png
 
 
+Then add them to this section:
+
+Home Page
+<p align="center">
+  <img src="screenshots/home.png" alt="Traffic Forecasting Home Page" width="900">
+</p>
+
+Forecasting Interface
+<p align="center">
+  <img src="screenshots/forecasting.png" alt="Traffic Forecasting Interface" width="900">
+</p>
+
+System Architecture
+<p align="center">
+  <img src="screenshots/architecture.png" alt="System Architecture" width="900">
+</p>
+
+Pre-trained Models
+
+The repository contains trained model checkpoints under:
+
+output/tuning_results/
+
+
+Current model files include:
+
+DSTAGNN_run_1.pth
+STGCN_run_1.pth
+
+
+Training loss plots are also included:
+
+DSTAGNN_run_1_loss_plot.png
+STGCN_run_1_loss_plot.png
+
+
+These checkpoints can be used by the application for inference according to the configuration implemented in the project.
+
+Results
+
+The project includes training loss plots for both implemented models.
+
+STGCN Training Loss
+
+The STGCN training loss plot is available at:
+
+output/tuning_results/STGCN_run_1_loss_plot.png
+
+DSTAGNN Training Loss
+
+The DSTAGNN training loss plot is available at:
+
+output/tuning_results/DSTAGNN_run_1_loss_plot.png
+
+Evaluation Metrics
+
+Evaluation metrics can be added below after running the model evaluation:
+
+Model	MAE	RMSE	MAPE
+STGCN	To be added	To be added	To be added
+DSTAGNN	To be added	To be added	To be added
+
+The evaluation values depend on the dataset split, preprocessing configuration, forecasting horizon, and trained model parameters.
+
+Preprocessing
+
+The project includes a preprocessing script:
+
+precompute.py
+
+
+The preprocessing pipeline prepares the traffic data and associated graph information for model training and inference.
+
+Run:
+
+python precompute.py
+
+
+The preprocessing process may generate or update files under:
 
 output/
 
+Model Training
+
+The project includes a training script:
+
+train_models.py
 
 
+To start model training:
+
+python train_models.py
 
 
-Currently included outputs include:
+The training process uses the traffic dataset and graph information to train the forecasting models.
+
+Depending on the configuration, trained model checkpoints and training plots are stored under:
+
+output/tuning_results/
+
+Model Inspection
+
+The project also includes:
+
+print_models.py
 
 
+This script can be used to inspect the implemented models and calculate or display evaluation-related information according to the code configuration.
 
-scaler.pkl
+Run:
 
-
-
-STGCN trained model
-
-
-
-DSTAGNN trained model
-
-
-
-Model loss plots
-
-
-
-These files can be used by the application when performing inference, depending on the configuration implemented in the Python scripts.
-
-
+python print_models.py
 
 Notebook
 
-
-
-The repository also contains:
-
-
+The repository contains the Jupyter Notebook:
 
 GeminiV3.ipynb
 
 
+The notebook can be opened using Jupyter Notebook or JupyterLab.
 
-
-
-The notebook can be opened using Jupyter Notebook or JupyterLab:
-
-
-
+Jupyter Notebook
 jupyter notebook GeminiV3.ipynb
 
-
-
-
-
-or:
-
-
-
+JupyterLab
 jupyter lab GeminiV3.ipynb
 
 
+The notebook can be used for experimentation, analysis, visualization, and model development.
 
-Research / Project Objectives
+Forecasting Workflow
 
+The complete workflow can be summarized as:
 
+Traffic Sensor Data
+        │
+        ▼
+Data Loading
+        │
+        ▼
+Data Preprocessing
+        │
+        ▼
+Normalization / Scaling
+        │
+        ▼
+Traffic Sensor Graph
+        │
+        ▼
+Spatial-Temporal Modeling
+        │
+        ├───────────────┐
+        ▼               ▼
+      STGCN          DSTAGNN
+        │               │
+        └───────┬───────┘
+                ▼
+        Traffic Prediction
+                │
+                ▼
+       Forecast Evaluation
+                │
+                ▼
+        Flask Web Interface
 
-The project focuses on exploring how graph-based deep learning can be applied to traffic forecasting by considering both:
+Research Objectives
 
+The main objective of this project is to explore how graph-based deep learning can be applied to traffic forecasting by considering both spatial and temporal dependencies.
 
+Temporal Dependencies
 
-Temporal dependencies — how traffic conditions change over time.
+Traffic conditions change over time. Historical traffic measurements can therefore provide useful information for predicting future traffic conditions.
 
+Spatial Dependencies
 
+Traffic sensors are connected through the road network. Traffic conditions at one sensor can be related to conditions at neighboring or connected sensors.
 
-Spatial dependencies — how traffic conditions at connected sensors influence each other.
+Combined Modeling
 
+Graph Neural Networks provide a way to model these spatial relationships while deep learning architectures can capture temporal patterns.
 
-
-The objective is to build a forecasting pipeline that can learn these relationships from traffic sensor data.
-
-
+This project explores the combination of these two types of dependencies through STGCN and DSTAGNN architectures.
 
 Future Improvements
 
-
-
 Possible future improvements include:
 
-
-
-Adding more forecasting horizons
-
-
+Adding multiple forecasting horizons
 
 Hyperparameter optimization
 
-
-
 Additional GNN architectures
 
-
-
-Improved visualization of predictions
-
-
+Improved prediction visualization
 
 Real-time traffic data integration
 
+More extensive model evaluation
 
-
-Model performance comparison using MAE, RMSE and MAPE
-
-
-
-Docker deployment
-
-
-
-Cloud deployment
-
-
+MAE, RMSE, and MAPE comparison
 
 Interactive traffic-network visualization
 
-
-
 REST API for model inference
 
+Docker deployment
 
+Cloud deployment
+
+Model monitoring
+
+Real-time dashboard integration
 
 Disclaimer
 
-
-
 This repository is intended for academic, research, and educational purposes.
 
+The forecasting results depend on the dataset, preprocessing pipeline, model architecture, model configuration, and trained model parameters.
 
-
-The forecasting results depend on the dataset, preprocessing pipeline, model configuration, and trained model parameters.
-
-
+The included trained models represent the state of the project at the time they were generated.
 
 Author
 
-
-
 Prasen
-
-
 
 GitHub:
 
-
-
 https://github.com/prasen2711
-
-
 
 License
 
+No open-source license has currently been specified for this repository.
 
+If the project is intended for public reuse or distribution, an appropriate open-source license can be added by creating a LICENSE file in the repository.
 
-A license has not yet been specified for this repository.
+Acknowledgements
 
+This project uses the METR-LA traffic dataset for traffic forecasting research and experimentation.
 
+The project builds on the broader research area of spatio-temporal Graph Neural Networks for intelligent transportation systems.
 
-If this project is intended for public reuse, consider adding an appropriate open-source license such as MIT before distributing the code.
+Repository
 
+GitHub Repository:
+
+https://github.com/prasen2711/GNN-Based-Traffic-Forecasting
