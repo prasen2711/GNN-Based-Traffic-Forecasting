@@ -1,5 +1,3 @@
-
-<img width="1880" height="926" alt="image" src="https://github.com/user-attachments/assets/069ae074-70bd-4f3c-8f67-8c74dcf985a3" />
 GNN-Based Traffic Forecasting
 
 A deep learning-based traffic forecasting project using Graph Neural Networks (GNNs) to model spatial and temporal traffic patterns.
