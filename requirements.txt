@@ -1,0 +1,10 @@
+flask
+numpy
+pandas
+scikit-learn
+torch
+pydeck
+networkx
+torchsummary
+matplotlib
+tables
